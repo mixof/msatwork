@@ -1,0 +1,12 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>Copyright (C) 2019 by original authors @ fontello.com</metadata>
+<defs>
+<font id="bell" horiz-adv-x="1000" >
+<font-face font-family="bell" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
+<missing-glyph horiz-adv-x="1000" />
+<glyph glyph-name="stroke-bell-icon" unicode="&#xe800;" d="M625-88c-10-35-62-62-125-62-63 0-115 27-125 62l-375 0c0 0 82 171 109 367 25 182 86 383 302 426l0 58c0 48 40 87 89 87 49 0 89-39 89-87l0-56c219-28 267-173 302-428 27-196 109-367 109-367l-375 0z" horiz-adv-x="1000" />
+</font>
+</defs>
+</svg>

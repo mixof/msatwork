@@ -1,0 +1,460 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:func="http://msreserved.com/functions"
+	xmlns:utils="http://java.sun.com/jsf/composite/utils">
+	<h:head>
+		<title>#{profileData.firstName} #{profileData.lastName} Home</title>
+<c:if test="#{not appSession.preventStats4User}">
+		<h:outputText value="#{systemVariables.variables['INITIAL_HEAD_CONTENT'].entity.value}" escape="false"/>
+</c:if>
+		<utils:meta id="meta"/>
+		<utils:headerScript pageName="homepage"/>
+		<utils:header/>
+		<h:outputText value="#{systemVariables.variables['CUSTOM_STYLES'].entity.value}" escape="false" />
+	</h:head>
+	<h:body styleClass="#{not empty appSession.user ? 'user-authorized' : ''}">
+<c:if test="#{not appSession.preventStats4User}">
+		<h:outputText value="#{systemVariables.variables['INITIAL_BODY_CONTENT'].entity.value}" escape="false"/>
+</c:if>		
+		<utils:clientAction id="client-action"/>
+    <div class="global-wrapper page-main">
+        <header>
+            <utils:topMenu id="top-menu" activeItem="1"/>
+            
+			<utils:topBanners id="top-banners" topBanners="#{homePage.topBanners}" topBannersCount="#{homePage.topBannersCount}"/>
+        </header>
+
+<h:panelGroup id="page-content">
+    	<div class="content wrapper">
+
+	    	<h:outputText value="#{func:processVariables(systemVariables.variables['CONTENT201610_HOME_BODY'].entity.value)}" escape="false" />
+    	<!-- 
+            <div class="infoblock-list">
+				<ui:repeat var="benefitAds" value="#{homePage.benefitAds}" varStatus="mvs">
+					<a class="infoblock-list-item benefit-ads-item" href="#{benefitAds.entity.url}">
+				    	<div class="benefit-ads-id" style="display: none;">#{benefitAds.entity.id}</div>
+				    	<div class="benefit-ads-name" style="display: none;">#{benefitAds.normalizedTitle}</div>
+				    	
+						<h:outputText value="#{benefitAds.entity.description}" escape="false" />
+						<ui:fragment rendered="#{empty appSession.user and benefitAds.entity.restricted}">
+							<img src="#{request.contextPath}/client/assets/images/key.png" class="key-sign" />
+						</ui:fragment>
+					</a>
+				</ui:repeat>
+            </div>
+
+            <ul class="two-columns">
+				<ui:repeat var="adBanner" value="#{homePage.adBanners}">
+					<li class="transparent ad-banner-content">
+				    	<div class="ad-banner-id" style="display: none;">#{adBanner.entity.id}</div>
+				    	<div class="ad-banner-name" style="display: none;">#{adBanner.normalizedTitle}</div>
+					    	
+						<h:outputText value="#{adBanner.entity.content}" escape="false" />
+					</li>
+				</ui:repeat>
+            </ul>
+    	 -->
+
+            <!-- 
+                <li class="text-center reserved-info-item-2-cell">
+                    <div class="reserved-info-item">
+                	<div class="wrapper">
+				    	<h:outputText value="#{systemVariables.variables['CONTENT_HOME_CONTACT_US'].entity.value}" escape="false" />
+                    </div>
+                	</div>
+                </li>
+             -->
+				             
+<div class="dialog-box-form-div">
+	<!-- >>>>>>>>> Dialog Box Question >>>>>>> -->
+	<ui:fragment rendered="#{(not empty appSession.user and not empty question.entity and not question.answered) or (empty appSession.user and not empty question.entity and question.validNotLoggedUserContent)}">
+		
+			
+				<!-- >>>>>>>>> HTML content for not logged users >>>>>>> -->
+				<ui:fragment rendered="#{empty appSession.user}">
+					
+						<h:outputText value="#{question.entity.notLoggedUserContent}" escape="false"/>
+					
+				</ui:fragment>	
+				<!-- >>>>>>>>> Dialog box for logged users >>>>>>> -->
+				<ui:fragment rendered="#{not empty appSession.user}">
+					<div id="question-form-block" class="infoblock-list-item-content">
+						<h:form id="question-form">											
+							<div class="infoblock-list-item-crtitle">#{question.entity.title}</div>
+							<h:messages id="messages" styleClass="error error-messages question-form-errors" />
+							<div class="infoblock-list-item-title">#{question.entity.question}</div>
+							
+							<h:inputTextarea id="target-answer" 
+								styleClass="question-answer-area question-answer"
+								onkeydown="clearErrors();"
+								required="true"
+								placeholder="#{question.entity.hint}"
+								requiredMessage="#{errors.answerRequired}"
+								value="#{question.answer}" />
+							<div class="answer-note">
+								Maximum 500 characters<span class="remaining" style="display: none;"> (<span class="left-characters">500</span> remaining)</span>
+							</div>
+								
+							<h:commandLink style="margin: 15px 0px 0;" styleClass="buttons text-center question-answer" 
+								action="#{question.submitAnswer}" onclick="$('.question-form-errors').remove();">
+								Submit
+								<f:ajax execute="@form" render="@form" onevent="onSubmitAnswer"/>
+							</h:commandLink>
+						</h:form>
+					</div>
+					<!-- >>>>>>>>> HTML content which shows after submit answer >>>>>>> -->
+					<!-- <div id="confirmation-context" class="infoblock-list-item-content" style="display: none; padding: 0; font-size: medium;"> -->
+					<div id="confirmation-context" class="infoblock-list-item-content" style="display: none; font-size: medium;">
+						<ui:fragment rendered="#{question.validLoggedUserContent}">
+							<h:outputText value="#{question.entity.loggedUserContent}" escape="false"/>
+						</ui:fragment>
+						<ui:fragment rendered="#{not question.validLoggedUserContent}">
+							<!-- <div style="padding: 30px;"> -->
+							<div>
+								<div class="infoblock-list-item-crtitle">#{question.entity.title}</div>
+								<div class="infoblock-list-item-title">#{question.entity.question}</div>
+								<div class="confirmation-text no-green-icon">Thank you for sharing!</div>
+							</div>
+						</ui:fragment>
+					</div>	
+				</ui:fragment>
+			
+		
+    </ui:fragment>
+	<!-- >>>>>>>>> HTML content for logged users and answered question and html content definted >>>>>>> -->
+	<ui:fragment rendered="#{not empty appSession.user and not empty question.entity and question.answered and question.validLoggedUserAnsweredContent}">
+		<div class="infoblock-list-item one-and-half-columns on-form copy-echo">
+			<div class="table">
+				<div class="infoblock-list-item-content" style="padding: 0; font-size: medium;">
+					<h:outputText value="#{question.entity.loggedUserAnsweredContent}" escape="false"/>
+				</div>
+			</div>
+		</div>
+    </ui:fragment>
+	<!-- <<<<<<<<<<< Dialog Box Question <<<<<<<<<<<< -->
+</div>   
+<div class="band-offers-articles-form-div">
+	<ui:repeat var="band" value="#{func:parseBandHomePage(systemVariables.variables['CONTENT201610_HOME_BODY'].entity.value)}">
+		<!-- <div bandid="#{band.id}" class="band-source info-block-list-dynamic"> -->
+		<div bandid="#{band.id}" class="band-source info-block-list-dynamic">
+			<utils:homePageBand items="#{band.items}"/>
+		</div>
+	</ui:repeat>
+</div>
+<div class="poll-form-div">
+<ui:fragment rendered="#{not empty appSession.user}"> <!-- >>> Hide for anonymous clients >>> -->
+                <!-- >>>>>>>>>>> Poll Section >>>>>>>>>>>> -->
+				<ui:fragment rendered="#{poll.initPoll(func:parsePollId(systemVariables.variables['CONTENT201610_HOME_BODY'].entity.value))}">
+					<div class="infoblock-list-item one-and-half-columns on-form poll-wrapper poll-main">
+						<div class="table">
+						<div class="infoblock-list-item-content ex1">
+							<div class="infoblock-list-item-crtitle">
+								POLL
+							</div>
+							<div>
+							<div class="infoblock-list-item-title">
+								#{poll.entity.question}
+							</div>
+							<div class="infoblock-list-item-body">
+								<h:form id="poll-form">
+									<div class="infoblock-list-item-description">
+										<ui:fragment rendered="#{not poll.pollVotes.voted}">
+											View results after voting.
+										</ui:fragment>
+										<ui:fragment rendered="#{poll.pollVotes.voted}">
+											Here's what other people are saying:
+										</ui:fragment>
+									</div>
+									<h:inputText id="target-answer" value="#{poll.targetAnswer}" styleClass="hidden-action" />
+									<ui:repeat value="#{poll.pollVotes.answers}" var="answer" varStatus="vs">
+										<ui:fragment rendered="#{not poll.pollVotes.voted}">
+											<input class="radio" id="poll-r#{vs.index}" name="poll1" type="radio" onclick="$('#poll-form\\:target-answer').val('#{vs.index}');$('#poll-form\\:vote-btn').click();"/> 
+											<label for="poll-r#{vs.index}">#{answer.answer}</label> 
+										</ui:fragment>
+										<ui:fragment rendered="#{poll.pollVotes.voted}">
+											<div class="radio-item">
+												<input class="radio" id="poll-r#{vs.index}" name="poll1" type="radio" onclick="$('#poll-form\\:target-answer').val('#{vs.index}');$('#poll-form\\:vote-btn').click();"/> 
+												<label for="poll-r#{vs.index}">#{answer.answer}</label>
+												<table class="poll-stats-item">
+													<tr>
+														<td class="td2">
+						                                    <div class="poll-persent-w">
+						                                    	<div class="poll-persent" style="width: #{answer.ratio}%;"></div> 
+						                                    	<div class="poll-value">
+						                                    		<h:outputText value="#{answer.ratio}" >
+						                                    			<f:convertNumber minFractionDigits="0" maxFractionDigits="2"/>
+						                                    		</h:outputText>%
+						                                    	</div>
+					                                    	</div>
+														</td>
+													</tr>
+												</table>
+											</div>
+										</ui:fragment>
+									</ui:repeat>
+									
+									<ui:fragment rendered="#{poll.pollVotes.voted}">
+										<div class="poll-footer ext">
+											Thank you! We look forward to improving the program based on your feedback.
+										</div>
+									</ui:fragment>
+									<ui:fragment rendered="#{not poll.pollVotes.voted}">
+									<div class="poll-footer ext">
+										Survey results are anonymous and will only be shared in aggregate with the Reserved team
+										</div>
+									</ui:fragment>
+									
+									<ui:fragment rendered="#{not empty poll.targetAnswer}">
+									<script>
+										var inputs = $('input[name="poll1"]');
+										for (var i = 0; i &lt; inputs.length; i++) {
+									    	if (i == #{poll.targetAnswer}) {
+												inputs[i].checked = true;
+												break;
+									  		}
+										}
+									</script>
+									</ui:fragment>
+									
+									<h:commandButton
+										id="vote-btn"  
+										action="#{poll.vote}" 
+										style="display:none; visibility: hidden;">
+										<f:ajax execute="@form" render="@form" onevent="onSubmitPoll"/>
+									</h:commandButton>
+								</h:form>									
+							</div>
+
+						</div>
+
+
+						</div>
+						</div>
+					</div>
+				</ui:fragment>
+
+                <!-- <<<<<<<<<<< Poll Section <<<<<<<<<<<< -->
+                
+</ui:fragment> <!-- <<< Hide for anonymous clients <<< -->
+</div>
+           
+			<script type="text/javascript">
+				function setPlaceHolders(){
+					$('.question-answer-area').attr('placeholder', "#{question.entity.hint}");
+					$('.question-answer-area').attr('maxlength', "500");
+				}
+			</script>
+			<ui:fragment rendered="#{not empty question.entity and not question.answered}">
+				<script type="text/javascript">
+					function clearErrors() {
+						$('.question-form-errors').remove();
+						resizeHomeBottomSection();
+					}
+					
+			    	function onSubmitAnswer(data) {
+			    		var source = data.source;
+			    		if (data.status == "begin") {
+			    			
+			    		}
+			    		else if (data.status == "success") {
+				    		var error = $('.question-form-errors').children();
+				    		if (error.length == 0) {
+				    			$('#question-form-block').hide();
+				    			$('#confirmation-context').show();
+				    		}
+			    		}
+			    		resizeHomeBottomSection();
+			    		setPlaceHolders();
+			    	}
+				</script>
+			</ui:fragment>
+				
+
+		</div>
+</h:panelGroup>        
+
+		<utils:footer id="footer"/>
+    </div>
+
+
+		<script type="text/javascript">
+			function confirmRedirect() {
+				return confirm('#{systemVariables.variables['CONTENT_REDIRECT_MESSAGE'].entity.value}');
+			}
+
+<c:if test="#{not appSession.preventStats4User}">
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+			ga('create', '#{resources.googleAnalyticsId}', 'auto');
+		<ui:fragment rendered="#{not empty appSession.user}">
+			ga('set', 'dimension1', 'Member');
+			ga('set', 'dimension2', 'Member');
+		</ui:fragment>
+		<ui:fragment rendered="#{empty appSession.user}">
+			ga('set', 'dimension2', 'Guest');
+		</ui:fragment>
+			ga('send', 'pageview');
+</c:if>
+
+			processContent();
+
+		  	function processContent() {
+		    	<!-- top banners -->
+		    	$('.topnav-bnr').each(function (i) {
+			  		var title = $.trim($(this).find('.top-banner-name').text());
+			  		var bannerId = parseInt($.trim($(this).find('.top-banner-id').text()));
+			  		
+				  	$(this).find("a").each(function (idx) 
+					{
+				  		var href = $(this).attr('href');
+
+				  		var onclick_attr = $(this).attr('onclick');
+				  		if (onclick_attr == null) {
+					  		/*
+					  		if (href.indexOf('http') == 0) {
+						  		var value = " ga('send', 'event', 'Benefit Ads: " + title + "', 'Link', '" + href + "');";
+						  		value += " saveAction('benefit_ads', '" + bannerId + "','" + title + "', '" + href + "', '" + href + "'); return false;";
+						  		$(this).attr('onclick', value);
+					  		}
+					  		else if (href.indexOf('mailto:') == 0) {
+						  		var value = "ga('send', 'event', 'Benefit Ads: " + title + "', 'Link', '" + href.substring('mailto:'.length) + "');";
+						  		value += " saveAction('benefit_ads', '" + bannerId + "','" + title + "', '" + href.substring('mailto:'.length) + "');";
+						  		$(this).attr('onclick', value);
+					  		}
+					  		else
+						  	*/ 
+						  	{
+						  		var value = " ga('send', 'event', 'Banner: Top', 'Link', '" + href + "');";
+						  		value += " saveAction('banner', '" + bannerId + "','Home Top', '" + href + "', '" + href + "'); return false;";
+						  		$(this).attr('onclick', value);
+						  	}
+					  	}
+				  	}
+				  	);
+			    });
+		    	
+		    	<!-- benefits ads -->
+		    	$('a.benefit-ads-item').each(function (i) {
+			  		var title = $.trim($(this).find('.benefit-ads-name').text());
+			  		var benefitAdsId = parseInt($.trim($(this).find('.benefit-ads-id').text()));
+			  		
+				  	//$(this).find("a").each(function (idx) 
+					{
+				  		var href = $(this).attr('href');
+
+				  		var onclick_attr = $(this).attr('onclick');
+				  		if (onclick_attr == null) {
+					  		/*
+					  		if (href.indexOf('http') == 0) {
+						  		var value = " ga('send', 'event', 'Benefit Ads: " + title + "', 'Link', '" + href + "');";
+						  		value += " saveAction('benefit_ads', '" + benefitAdsId + "','" + title + "', '" + href + "', '" + href + "'); return false;";
+						  		$(this).attr('onclick', value);
+					  		}
+					  		else if (href.indexOf('mailto:') == 0) {
+						  		var value = "ga('send', 'event', 'Benefit Ads: " + title + "', 'Link', '" + href.substring('mailto:'.length) + "');";
+						  		value += " saveAction('benefit_ads', '" + benefitAdsId + "','" + title + "', '" + href.substring('mailto:'.length) + "');";
+						  		$(this).attr('onclick', value);
+					  		}
+					  		else
+						  	*/ 
+						  	{
+						  		var value = " ga('send', 'event', 'Benefit Ads: " + title + "', 'Link', '" + href + "');";
+						  		value += " saveAction('benefit_ads', '" + benefitAdsId + "','" + title + "', '" + href + "', '" + href + "'); return false;";
+						  		$(this).attr('onclick', value);
+						  	}
+					  	}
+				  	}
+				  	//);
+			    });
+
+		    	<!-- Ad Banners -->
+		    	$('div.ad-banner-content').each(function (i) {
+			  		var title = $.trim($(this).find('.ad-banner-name').text());
+			  		var adBannerId = parseInt($.trim($(this).find('.ad-banner-id').text()));
+			  		
+				  	$(this).find("a").each(function (idx) {
+				  		var href = $(this).attr('href');
+
+				  		var onclick_attr = $(this).attr('onclick');
+				  		if (onclick_attr == null) {
+					  		var value = " ga('send', 'event', 'Banner: Ad', 'Link', '" + href + "');";
+					  		value += " saveAction('banner', '" + adBannerId + "','Ad', '" + href + "');";
+					  		$(this).attr('onclick', value);
+					  	}
+				  	});
+			    });
+				var source = $('div.poll-form-div');
+				var target = $('div.poll-target-place');
+				if (target.length &gt; 0)
+					target.replaceWith(source.children());
+				else
+					source.empty();
+				
+				source = $('div.dialog-box-form-div');
+				target = $('div.dialog-box-target-place');
+				if (target.length &gt; 0) {
+					target.replaceWith(source.children());
+				}
+				else {
+					source.empty();
+				}
+
+				var foundItem = $('.home-page-band-target-place').length;
+				var iteration = 0;
+				var bandid;
+				while (foundItem != 0){
+					target = $('.home-page-band-target-place');
+					bandid = target.attr( "bandid" );
+					target = $('.home-page-band-target-place[bandid = '+bandid+']');
+					source = $('.band-source[bandid = '+bandid+']');
+					target.replaceWith(source.children());
+					foundItem = $('.home-page-band-target-place').length;
+				}
+				
+				setPlaceHolders();
+			} 
+			
+			function votedPoll(name) {
+				return $('input[name="' + name + '"]:checked').length > 0;
+			}
+
+			function moveLeft() {
+				var mainLast = $($('ul.main-list').find('li').last());
+				mainLast.hide();
+				var bufferFirst = $($('ul.buffer-list').find('li').get(0));
+				bufferFirst.before(mainLast);
+				
+				var mainFirst = $($('ul.main-list').find('li').get(0));
+				var bufferLast = $($('ul.buffer-list').find('li').last());
+				mainFirst.before(bufferLast);
+				bufferLast.show();
+			}
+
+			function moveRight() {
+				var mainFirst = $($('ul.main-list').find('li').get(0));
+				mainFirst.hide();
+				var bufferLast = $($('ul.buffer-list').find('li').last());
+				bufferLast.after(mainFirst);
+				
+				var mainLast = $($('ul.main-list').find('li').last());
+				var bufferFirst = $($('ul.buffer-list').find('li').get(0));
+				mainLast.after(bufferFirst);
+				bufferFirst.show();
+			}
+			
+	    	function onSubmitPoll(data) {
+	    		resizeHomeBottomSection();
+	    	}
+		</script>
+		<utils:commonPopups id="common-popups" update=":top-menu:user-form :top-menu:bell-area-form :page-content :poll-form :question-form" onsuccess="processContent"/>
+		
+		<utils:bodyScript pageName="homepage"/>
+	</h:body>
+</html>
